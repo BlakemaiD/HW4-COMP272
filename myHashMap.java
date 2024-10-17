@@ -1,5 +1,5 @@
 /*
- * *** YOUR NAME GOES HERE / YOUR SECTION NUMBER ***
+ * *** Blake/ 002 ***
  *
  * This hashMap object represents an over simplification of Java's implementation of HashMap within
  * Java's Collection Framework Library. You are to complete the following methods:
@@ -12,10 +12,8 @@
  * of those methods implemented in this Java library.
  *
  */
-
-
 /**
- *
+
  *  This sample code is illustrating a hash table using separate chaining. To illustrate this,
  *  the code is building a Hash Map implementation that emulates Java's HashMap class. This class
  *  implements many of the java library's class's methods and emulates the behavior of the Map
@@ -77,7 +75,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
-
 /**
  * Class HashNode
  *
@@ -86,16 +83,14 @@ import java.util.HashSet;
  */
 
 class HashNode<K,V> {
-    K key;
-    V value;
-    HashNode<K, V> next;
-    public HashNode() {
-        this.key=key;
-        this.value=value;
-    }
+        K key;
+        V value;
+        HashNode<K, V> next;
+        public HashNode() {
+                this.key=key;
+                this.value=value;
+        }
 }
-
-
 /**
  * A simple implementation of a HashMap that is built to emulate the Map Interface.
  * The <key, values> pairs are stored in a Map, where the key represents a hash
@@ -118,406 +113,442 @@ class HashNode<K,V> {
 
 class myHashMap<K,V> {
 
-    private static final float DEFAULT_LOAD_FACTOR = 0.7f;
-    private static final int   INITIAL_NUM_BUCKETS = 10;
+        private static final float DEFAULT_LOAD_FACTOR = 0.7f;
+        private static final int   INITIAL_NUM_BUCKETS = 10;
 
-    ArrayList<HashNode<K, V>> bucket = new ArrayList<>();
-    int numBuckets = INITIAL_NUM_BUCKETS;
-    int size = 0;
+        ArrayList<HashNode<K, V>> bucket = new ArrayList<>();
+        int numBuckets = INITIAL_NUM_BUCKETS;
+        int size = 0;
 
-    public myHashMap() {
-        for (int i = 0; i < numBuckets; i++) {
-            bucket.add(null);
+        public myHashMap() {
+                for (int i = 0; i < numBuckets; i++) {
+                        bucket.add(null);
+                }
         }
-    }
 
-    public int Size()           { return size; }
-    public boolean isEmpty()    { return size == 0; }
+        public int Size()           { return size; }
+        public boolean isEmpty()    { return size == 0; }
 
 
-    /**
-     * Method clear()
-     *
-     * Reinitialize the hash to INITIAL_NUM_BUCKETS. For each bucket, it resets
-     * the bucket slots (in the array) to a null Node.
-     */
+        /**
+         * Method clear()
+         *
+         * Reinitialize the hash to INITIAL_NUM_BUCKETS. For each bucket, it resets
+         * the bucket slots (in the array) to a null Node.
+         */
 
-    public void clear() {
-        size = 0;
-        numBuckets = INITIAL_NUM_BUCKETS;
-        bucket = new ArrayList<>();
-        for (int i = 0; i < numBuckets; i++) {
-            bucket.add(null);
+        public void clear() {
+                size = 0;
+                numBuckets = INITIAL_NUM_BUCKETS;
+                bucket = new ArrayList<>();
+                for (int i = 0; i < numBuckets; i++) {
+                        bucket.add(null);
+                }
         }
-    }
 
 
-    /**
-     * method getBucketindex()
-     *
-     * Performs two parts.
-     *   1) First invokes a very simple hash code generator which generates a 32-bit
-     *      integer. The mask (bit operation) masks off the sign bit )turns the
-     *      32-bit integer into a 31-bit non-negative integer).
-     *   2) Second, it invokes a compressor expression (in this case, performing a
-     *      MOD operation). This compresses the hash number to between 0 and
-     *      (numBuckets-1) which will be an index into our hash bucket slot (aka,
-     *      key for Map);
-     *
-     *  @param key - key value to locate hash map bucket for
-     *
-     *  @return bucketIndex - bucket index number for key value
-     */
+        /**
+         * method getBucketindex()
+         *
+         * Performs two parts.
+         *   1) First invokes a very simple hash code generator which generates a 32-bit
+         *      integer. The mask (bit operation) masks off the sign bit )turns the
+         *      32-bit integer into a 31-bit non-negative integer).
+         *   2) Second, it invokes a compressor expression (in this case, performing a
+         *      MOD operation). This compresses the hash number to between 0 and
+         *      (numBuckets-1) which will be an index into our hash bucket slot (aka,
+         *      key for Map);
+         *
+         *  @param key - key value to locate hash map bucket for
+         *
+         *  @return bucketIndex - bucket index number for key value
+         */
 
-    private int getBucketIndex(K key) {
-        return  (key.hashCode() & 0x7fffffff) % numBuckets;
-    }
-
-
-    /**
-     * method: V get(K)
-     *
-     * Returns the value to which the specified key is mapped, or null if this map contains
-     * no mapping for the key. This method will probe to the correct bucket, then loop
-     * through the bucket's chained nodes (linked-list) until the key is found. If not found,
-     * the key is not in the hash map and the method will return null.
-     *
-     * @param key - key value for identifying the <k,v> pair
-     *
-     * @return val - value for the provided key value, else null
-     */
-
-    public V get(K key) {
-        int index = getBucketIndex(key);
-
-        HashNode<K, V> head = bucket.get(index);
-        while (head != null) {
-            if (head.key.equals(key)) {
-                return head.value;
-            }
-            head = head.next;
+        private int getBucketIndex(K key) {
+                return  (key.hashCode() & 0x7fffffff) % numBuckets;
         }
-        return null;
-    }
 
 
-    /**
-     * method: V remove(K)
-     *
-     * Removes the entry for the specified key only if it is currently mapped to the
-     * specified value. The method will probe into the bucket lists. If the bucket
-     * has a chained list, then it will be traversed to identify the key to
-     * remove. If no chained list and/or no node is found the chained list representing
-     * the key, then it is not in the hash map.
-     *
-     * If the key is found, it is removed from the chained list and the hashmap size
-     * is adjusted.
-     *
-     * @param key - key value for the <key,value> pair to remove
-     *
-     * @return value - return the node for the <key,value> 
-     *                 removed, else null if not found
-     */
+        /**
+         * method: V get(K)
+         *
+         * Returns the value to which the specified key is mapped, or null if this map contains
+         * no mapping for the key. This method will probe to the correct bucket, then loop
+         * through the bucket's chained nodes (linked-list) until the key is found. If not found,
+         * the key is not in the hash map and the method will return null.
+         *
+         * @param key - key value for identifying the <k,v> pair
+         *
+         * @return val - value for the provided key value, else null
+         */
 
-    public V remove(K key) {
+        public V get(K key) {
+                int index = getBucketIndex(key);
+
+                HashNode<K, V> head = bucket.get(index);
+                while (head != null) {
+                        if (head.key.equals(key)) {
+                                return head.value;
+                        }
+                        head = head.next;
+                }
+                return null;
+        }
+
+
+        /**
+         * method: V remove(K)
+         *
+         * Removes the entry for the specified key only if it is currently mapped to the
+         * specified value. The method will probe into the bucket lists. If the bucket
+         * has a chained list, then it will be traversed to identify the key to
+         * remove. If no chained list and/or no node is found the chained list representing
+         * the key, then it is not in the hash map.
+         *
+         * If the key is found, it is removed from the chained list and the hashmap size
+         * is adjusted.
+         *
+         * @param key - key value for the <key,value> pair to remove
+         *
+         * @return value - return the node for the <key,value>
+         *                 removed, else null if not found
+         */
+
+        public V remove(K key) {
+
+                int index = getBucketIndex(key); //find index
+                HashNode<K, V> head = bucket.get(index);
+
+                //removing the head
+                if (head != null && head.key.equals(key)) {
+                        V removedVal = head.value;
+                        bucket.set(index, head.next);
+                        size--;
+                        return removedVal;
+                }
+
+                HashNode<K, V> current = head;
+                //go through map and link the next keys
+                while (current != null && current.next != null) {
+                        if (current.next.key.equals(key)) {
+                                V removedVal = current.next.value;
+                                current.next = current.next.next;
+                                size--;
+                                return removedVal;
+                        }
+                        current = current.next;
+                }
+
+                return null;
+        }
 
         /*
-         * ADD YOUR CODE HERE
-         *
-         * Review the code in the whole object to understand teh data structures layout.
+         * Review the code in the whole object to understand the data structures layout.
          * Additionally, review the method put() for inserting a new Key / Value pair into
          * the HashMap. This method will do the opposite by removing an element. Do see
          * the return value discussion in this method's prologue to make sure the correct
          * return value is returned the invoking function based on the remove outcome.
          */
 
-        return null;
-    }
-
-
-    /**
-     * Method: boolean remove(K, V)
-     *
-     * Removes the entry for the specified key only if it is currently mapped to some value
-     *
-     * @param: key - key for identifying <k,v>
-     * @param: val - will remove <k,v> only if existing value 
-     *               equals val
-     *
-     * @return: true if deleted, else false
-     */
-
-    public boolean remove(K key, V val) {
-
-        V originalValue = get(key);
-
-        if (originalValue == null || 
-           (! originalValue.equals(val)) ) {
-            return false;
-        }
-
-        // Key was found and its value equals the passed
-        // parameter 'val'
-        remove(key);
-
-        return true;
-    }
-
-
-    /**
-     * method: V put(K, V)
-     *
-     * Associates the specified value with the specified key in this map. The method
-     * will check if the key is already in the hash map, if so, it updates the value
-     * and returns the old value. If the key is not found, then it will insert the
-     * <k,v> pair. Last if inserting the <k,v>, the load factor is checked. If it is
-     * greater than the DEFAULT_LOAD_FACTOR %, the method will double the bucket
-     * map and rehash the whole hash map.
-     *
-     * @param key   - Key to the <k,v> pair operate on
-     * @param value - if key found, value is updated to this 
-     *                param, else routine inserts <k,v>
-     *
-     * @return value - if key exists, returns old value before 
-     *                 replacing with provided value, else null.
-     */
-
-    public V put(K key, V value) {
-
-        /*
-         * If the <key,value> already exists in the hash map,
-         * then replace the value, else insert the <key,value>
-         */
-        V oldValue = get(key);
-        if ( oldValue != null) {
-            replace(key, value);
-            return oldValue;
-        }
-
-        int index = getBucketIndex(key);
-        HashNode<K, V> head = bucket.get(index);
-        HashNode<K, V> toAdd = new HashNode<>();
-        toAdd.key = key;
-        toAdd.value = value;
-        if (head == null) {
-            bucket.set(index, toAdd);
-            size++;
-
-        } else {
-            while (head != null) {
-                if (head.key.equals(key)) {
-                    head.value = value;
-                    size++;
-                    break;
-                }
-                head = head.next;
-            }
-            if (head == null) {
-                head = bucket.get(index);
-                toAdd.next = head;
-                bucket.set(index, toAdd);
-                size++;
-            }
-        }
-
-        /*
-         * Check the load factor of the hashmap, if greater 
-         * than DEFAULT_LOAD_FACTOR, we will double the number 
-         * of buckets of our hashmap.
-         */
-
-        if ((1.0 * size) / numBuckets > DEFAULT_LOAD_FACTOR) {
-            //do something
-            ArrayList<HashNode<K, V>> tmp = bucket;
-            bucket = new ArrayList<>();
-            numBuckets = 2 * numBuckets;
-            size = 0;
-
-            for (int i = 0; i < numBuckets; i++) {
-                bucket.add(null);
-            }
-
-            /*
-             * Traverse the original buckets, and for each bucket
-             * traverse the nodes stored there (via linked-list).
-             * For each node (<key, value> pair), add to the new
-             * (grown) bucket list. The re-add process will 
-             * rehash the keys to the new bucket size.
-             */
-            for (HashNode<K, V> headNode : tmp) {
-                while (headNode != null) {
-                    put(headNode.key, headNode.value);
-                    headNode = headNode.next;
-                }
-            }
-        }
-
-        return null;
-    }
-
-
-    /**
-     * method: V putIfAbsent(K, V)
-     *
-     * If the specified key is not already associated with a value (or is mapped to null)
-     * associates it with the given value and returns null, else returns the current value.
-     *
-     * @param: key   - The key to check if exists in the hashmap
-     * @parem: value - The value to place in as a <k, v> pair if
-     *                 key does not exist
-     *
-     * @return: V - returns the existing value if the key is 
-     *              found, else null
-     */
-
-    public V putIfAbsent(K key, V value) {
-        V originalValue = get(key);
-
-        if (originalValue == null ) {
-            put(key, value);
-            return null;
-        }
-
-        return originalValue;
-    }
-
-
-    /**
-     * method: V replace(K, V)
-     *
-     * Replaces the entry for the specified key only if it is currently mapped to some value (aka, the
-     * key already exist with some value).
-     *
-     *  @param key   - Key for the <k, v> pair to replace its 
-     *                 value
-     *  @param val   - The new value to replace the old one if 
-     *                 found.
-     *
-     *  @return V  - returns the old value for the <k,v> pair, 
-     *               else null if not found.
-     */
-
-    public V replace(K key, V val) {
-
-        /*
-         * ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME AT TOP OF FILE
+        /**
+         * Method: boolean remove(K, V)
          *
-         * Make sure you return the proper value based on the outcome of this method's
+         * Removes the entry for the specified key only if it is currently mapped to some value
+         *
+         * @param: key - key for identifying <k,v>
+         * @param: val - will remove <k,v> only if existing value
+         *               equals val
+         *
+         * @return: true if deleted, else false
+         */
+
+        public boolean remove(K key, V val) {
+
+                V originalValue = get(key);
+
+                if (originalValue == null ||
+                        (! originalValue.equals(val)) ) {
+                        return false;
+                }
+
+                // Key was found and its value equals the passed
+                // parameter 'val'
+                remove(key);
+
+                return true;
+        }
+
+
+        /**
+         * method: V put(K, V)
+         *
+         * Associates the specified value with the specified key in this map. The method
+         * will check if the key is already in the hash map, if so, it updates the value
+         * and returns the old value. If the key is not found, then it will insert the
+         * <k,v> pair. Last if inserting the <k,v>, the load factor is checked. If it is
+         * greater than the DEFAULT_LOAD_FACTOR %, the method will double the bucket
+         * map and rehash the whole hash map.
+         *
+         * @param key   - Key to the <k,v> pair operate on
+         * @param value - if key found, value is updated to this
+         *                param, else routine inserts <k,v>
+         *
+         * @return value - if key exists, returns old value before
+         *                 replacing with provided value, else null.
+         */
+
+        public V put(K key, V value) {
+
+                /*
+                 * If the <key,value> already exists in the hash map,
+                 * then replace the value, else insert the <key,value>
+                 */
+                V oldValue = get(key);
+                if ( oldValue != null) {
+                        replace(key, value);
+                        return oldValue;
+                }
+
+                int index = getBucketIndex(key);
+                HashNode<K, V> head = bucket.get(index);
+                HashNode<K, V> toAdd = new HashNode<>();
+                toAdd.key = key;
+                toAdd.value = value;
+                if (head == null) {
+                        bucket.set(index, toAdd);
+                        size++;
+
+                } else {
+                        while (head != null) {
+                                if (head.key.equals(key)) {
+                                        head.value = value;
+                                        size++;
+                                        break;
+                                }
+                                head = head.next;
+                        }
+                        if (head == null) {
+                                head = bucket.get(index);
+                                toAdd.next = head;
+                                bucket.set(index, toAdd);
+                                size++;
+                        }
+                }
+
+                /*
+                 * Check the load factor of the hashmap, if greater
+                 * than DEFAULT_LOAD_FACTOR, we will double the number
+                 * of buckets of our hashmap.
+                 */
+
+                if ((1.0 * size) / numBuckets > DEFAULT_LOAD_FACTOR) {
+                        //do something
+                        ArrayList<HashNode<K, V>> tmp = bucket;
+                        bucket = new ArrayList<>();
+                        numBuckets = 2 * numBuckets;
+                        size = 0;
+
+                        for (int i = 0; i < numBuckets; i++) {
+                                bucket.add(null);
+                        }
+
+                        /*
+                         * Traverse the original buckets, and for each bucket
+                         * traverse the nodes stored there (via linked-list).
+                         * For each node (<key, value> pair), add to the new
+                         * (grown) bucket list. The re-add process will
+                         * rehash the keys to the new bucket size.
+                         */
+                        for (HashNode<K, V> headNode : tmp) {
+                                while (headNode != null) {
+                                        put(headNode.key, headNode.value);
+                                        headNode = headNode.next;
+                                }
+                        }
+                }
+
+                return null;
+        }
+
+
+        /**
+         * method: V putIfAbsent(K, V)
+         *
+         * If the specified key is not already associated with a value (or is mapped to null)
+         * associates it with the given value and returns null, else returns the current value.
+         *
+         * @param: key   - The key to check if exists in the hashmap
+         * @parem: value - The value to place in as a <k, v> pair if
+         *                 key does not exist
+         *
+         * @return: V - returns the existing value if the key is
+         *              found, else null
+         */
+
+        public V putIfAbsent(K key, V value) {
+                V originalValue = get(key);
+
+                if (originalValue == null ) {
+                        put(key, value);
+                        return null;
+                }
+
+                return originalValue;
+        }
+
+
+        /**
+         * method: V replace(K, V)
+         *
+         * Replaces the entry for the specified key only if it is currently mapped to some value (aka, the
+         * key already exist with some value).
+         *
+         *  @param key   - Key for the <k, v> pair to replace its
+         *                 value
+         *  @param val   - The new value to replace the old one if
+         *                 found.
+         *
+         *  @return V  - returns the old value for the <k,v> pair,
+         *               else null if not found.
+         */
+        /* Make sure you return the proper value based on the outcome of this method's
          * replace (see method's prologue above).
          */
+        public V replace(K key, V val) {
 
-        return val;
-    }
+                int index = getBucketIndex(key); //find index
+                HashNode<K, V> head = bucket.get(index);
 
-    
-    /**
-     * method: boolean replace(K, V, V)
-     *
-     * Replaces the entry for the specified key only if currently mapped to the specified value.
-     *
-     *  @param key    - Key for the <k, v> pair to replace its 
-     *                  value
-     *  @param oldVal - Replace only if current <k,v>'s value 
-     *                  is same as oldVal
-     *  @param newVal - the new value to use.
-     *
-     *  @return V  - returns the old value for the <k,v> pair, 
-     *               else null if not found.
-     */
+                while (head != null) { //check for null
+                        if (head.key.equals(key)) {
+                                V oldVal = head.value;
+                                head.value = val; //replace the val but return old
+                                return oldVal;
+                        }
+                        head = head.next;
+                }
+                return null;
+        }
 
-    public boolean replace(K key, V oldVal, V newVal) {
 
-        /*
-         * ADD YOUR CODE HERE
+        /**
+         * method: boolean replace(K, V, V)
          *
-         * This method should apply the precondition (aka, the Key already exists with the
+         * Replaces the entry for the specified key only if currently mapped to the specified value.
+         *
+         *  @param key    - Key for the <k, v> pair to replace its
+         *                  value
+         *  @param oldVal - Replace only if current <k,v>'s value
+         *                  is same as oldVal
+         *  @param newVal - the new value to use.
+         *
+         *  @return V  - returns the old value for the <k,v> pair,
+         *               else null if not found.
+         */
+        /* This method should apply the precondition (aka, the Key already exists with the
          * value 'oldval', and is so, it SHOULD call replace(K, V) for code reuse.
          */
 
-        return false;
-    }
 
+        public boolean replace(K key, V oldVal, V newVal) {
+                int index = getBucketIndex(key); //find index
+                HashNode<K, V> head = bucket.get(index);
 
-    /**
-     * Method: boolean contains(V)
-     *
-     * Returns true if this map maps one or more keys to the specified value
-     *
-     * @param val: Value to search for in hashmap to determine 
-     *             if it is contained there.
-     *
-     * @return: true if found, else false.
-     */
-
-    public boolean containsValue(V val) {
-
-        for (HashNode<K, V> headNode : bucket) {
-            while (headNode != null) {
-                if ( headNode.value.equals(val) )
-                    return true;
-                headNode = headNode.next;
-            }
+                while (head != null) {
+                        if (head.key.equals(key)) {
+                                if (head.value.equals(oldVal)) {
+                                        head.value = newVal;
+                                        return true;
+                                } else {
+                                        return false; //if does not match oldVal just return false
+                                }
+                        }
+                        head = head.next;
+                }
+                return false;
         }
 
-        return false;
-    }
 
+        /**
+         * Method: boolean contains(V)
+         *
+         * Returns true if this map maps one or more keys to the specified value
+         *
+         * @param val: Value to search for in hashmap to determine
+         *             if it is contained there.
+         *
+         * @return: true if found, else false.
+         */
 
-    /**
-     * Method: boolean containsKey(K)
-     *
-     * Returns true if this map contains a mapping for the specified key.
-     *
-     * @param key: The key to search for to determine of hash 
-     *             map contains it
-     *
-     * @return: true if found, else false.
-     */
+        public boolean containsValue(V val) {
 
-    public boolean containsKey (K key)  {
-        return (get(key) == null ? false : true);
-    }
+                for (HashNode<K, V> headNode : bucket) {
+                        while (headNode != null) {
+                                if ( headNode.value.equals(val) )
+                                        return true;
+                                headNode = headNode.next;
+                        }
+                }
 
-
-    /**
-     * Method: Set<Map.Entry<K,V>> entrySet()
-     *
-     * Returns a 'Set' view of the mappings contained in the map.
-     *
-     * @return Set<Map.Entry<K,V></K,V>> - set of all K/V pairs in map
-     */
-    public Set<Map.Entry<K,V>> entrySet() {
-        Set<Map.Entry<K,V>> returnSet = new HashSet<>();
-
-        for (HashNode<K, V> headNode : bucket) {
-            while (headNode != null) {
-                returnSet.add(Map.entry( headNode.key, headNode.value));
-                headNode = headNode.next;
-            }
+                return false;
         }
 
-        return returnSet;
-    }
 
+        /**
+         * Method: boolean containsKey(K)
+         *
+         * Returns true if this map contains a mapping for the specified key.
+         *
+         * @param key: The key to search for to determine of hash
+         *             map contains it
+         *
+         * @return: true if found, else false.
+         */
 
-    /**
-     * Method: Set<K> keySet()
-     *
-     * Returns a 'Set' view of the keys contained in the map.
-     *
-     * @return Set<K> - set of all keys in map
-     */
-
-    public Set<K> keySet() {
-        Set<K> returnSet = new HashSet<>();
-        for (HashNode<K, V> headNode : bucket) {
-            while (headNode != null) {
-                returnSet.add(headNode.key);
-                headNode = headNode.next;
-            }
+        public boolean containsKey (K key)  {
+                return (get(key) == null ? false : true);
         }
 
-        return returnSet;
-    }
+
+        /**
+         * Method: Set<Map.Entry<K,V>> entrySet()
+         *
+         * Returns a 'Set' view of the mappings contained in the map.
+         *
+         * @return Set<Map.Entry<K,V></K,V>> - set of all K/V pairs in map
+         */
+        public Set<Map.Entry<K,V>> entrySet() {
+                Set<Map.Entry<K,V>> returnSet = new HashSet<>();
+
+                for (HashNode<K, V> headNode : bucket) {
+                        while (headNode != null) {
+                                returnSet.add(Map.entry( headNode.key, headNode.value));
+                                headNode = headNode.next;
+                        }
+                }
+
+                return returnSet;
+        }
+
+
+        /**
+         * Method: Set<K> keySet()
+         *
+         * Returns a 'Set' view of the keys contained in the map.
+         *
+         * @return Set<K> - set of all keys in map
+         */
+
+        public Set<K> keySet() {
+                Set<K> returnSet = new HashSet<>();
+                for (HashNode<K, V> headNode : bucket) {
+                        while (headNode != null) {
+                                returnSet.add(headNode.key);
+                                headNode = headNode.next;
+                        }
+                }
+
+                return returnSet;
+        }
 
 } /* end class myHashMap */
